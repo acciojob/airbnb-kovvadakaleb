@@ -67,17 +67,19 @@ public class HotelManagementRepository {
     }
 
     public int bookARoom(Booking booking) {
-
+       int totalAmount = 0;
        String hotel = booking.getHotelName();
-       Hotel hotelDetails = hoteldb.get(hotel);
-       int available = hotelDetails.getAvailableRooms();
-       if(available<booking.getNoOfRooms()) return -1;
-        UUID uuid = UUID.randomUUID();
-        String bookingID = uuid.toString();
-        bookingdb.put(bookingID,booking);
+       if(hoteldb.containsKey(hotel)) {
+           Hotel hotelDetails = hoteldb.get(hotel);
+           int available = hotelDetails.getAvailableRooms();
+           if (available < booking.getNoOfRooms()) return -1;
+           UUID uuid = UUID.randomUUID();
+           String bookingID = uuid.toString();
+           bookingdb.put(bookingID, booking);
 
-        int totalAmount = booking.getNoOfRooms()*hotelDetails.getPricePerNight();
-        hotelDetails.setAvailableRooms(available-booking.getNoOfRooms());
+           totalAmount = booking.getNoOfRooms() * hotelDetails.getPricePerNight();
+           hotelDetails.setAvailableRooms(available - booking.getNoOfRooms());
+       }
         return totalAmount;
     }
 
@@ -93,8 +95,9 @@ public class HotelManagementRepository {
 
     public Hotel updateFacilities(List<Facility> newFacilities, String hotelName) {
 
-        Hotel hotel = hoteldb.get(hotelName);
-        if(hotel!=null) {
+
+        if(hoteldb.containsKey(hotelName)) {
+            Hotel hotel = hoteldb.get(hotelName);
              List<Facility> updateFacility = new ArrayList<>(hotel.getFacilities());
                  for(Facility newFacility : newFacilities){
                      boolean found = false;
@@ -110,7 +113,8 @@ public class HotelManagementRepository {
 
             hotel.setFacilities(updateFacility);
             hoteldb.put(hotelName, hotel);
+            return hotel;
         }
-        return hotel;
+        return new Hotel();
     }
 }
