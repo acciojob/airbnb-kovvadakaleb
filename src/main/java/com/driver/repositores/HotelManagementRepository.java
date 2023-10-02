@@ -26,7 +26,7 @@ public class HotelManagementRepository {
         bookingdb = new HashMap<>();
     }
     public String addHotel(Hotel hotel) {
-        if(hotel.getHotelName()==null || hotel==null){
+        if(hotel==null || hotel.getHotelName()==null){
             return "Empty Failure";
         }
         if(hoteldb.containsKey(hotel.getHotelName())){
@@ -75,6 +75,7 @@ public class HotelManagementRepository {
            if (available < booking.getNoOfRooms()) return -1;
            UUID uuid = UUID.randomUUID();
            String bookingID = uuid.toString();
+
            bookingdb.put(bookingID, booking);
 
            totalAmount = booking.getNoOfRooms() * hotelDetails.getPricePerNight();
@@ -104,6 +105,7 @@ public class HotelManagementRepository {
                      for(Facility facility : hotel.getFacilities()){
                          if(facility.equals(newFacility)){
                              found=true;
+                             break;
                          }
                      }
                      if(found==false){
